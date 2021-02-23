@@ -19,7 +19,7 @@ const UserSchema = new Schema({
     postalCode: String
   },
   created: { type: Date, default: Date.now },
-  Urls:[{type:String,ref:'Url'}]
+  urls:[{type:String,ref:'Url'}]
 });
 
 

@@ -49,7 +49,6 @@ router.post('/signup', (req, res, next) => {
 });
 
 router.post('/login', (req, res, next) => {
-
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) throw err;
 
@@ -109,7 +108,7 @@ router.route('/profile')
 
       if (req.body.addr1) user.address.addr1 = req.body.addr1;
       if (req.body.addr2) user.address.addr2 = req.body.addr2;
-      if (req.body.state) user.address.state = req.body.state;
+      if (req.body.state)  user.address.state = req.body.state;
       if (req.body.postalCode) user.address.postalCode = req.body.postalCode;
       user.save();
       res.json({
@@ -120,5 +119,53 @@ router.route('/profile')
     });
   });
 
-  
+router.route('/url')
+  .get(checkJWT, (req, res, next) => {
+    Url.find({ user: req.decoded.user._id }, (err, urls) => {
+      res.json({
+        success: true,
+        urls: urls,
+        message: "Successful"
+      });
+    });
+  })
+  .post(checkJWT, (req, res, next) => {
+    Url.findOne({ user: req.decoded.user._id,url:req.body.url }, (err, url) => {
+      if (err){
+        res.json({
+            success: false,
+            message: 'Something went wrong !'
+        });    
+      }else if(!url){
+        let newurl = new Url();
+        newurl.user=req.decoded.user._id;
+        newurl.url = req.body.url;
+        newurl.maxResponseTime = req.body.maxResponseTime
+        newurl.up = true;
+        newurl.save()
+        User.findOne({_id:req.decoded.user._id},(err,user)=>{
+            if(err){
+                res.json({
+                    success: false,
+                    message: 'Something went wrong !'
+                });  
+            }else if(user){
+                user.urls = user.urls.push(newurl._id)
+                user.save()
+                res.json({
+                    success: true,
+                    message: 'Successfully added your website !',
+                    url:newurl
+                });
+            }
+        })
+      }else{
+        res.json({
+            success: false,
+            message: 'Website already exists !'
+        });        
+      }
+    });
+  });  
+
 module.exports = router;
