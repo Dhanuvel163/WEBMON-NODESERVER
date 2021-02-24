@@ -5,7 +5,8 @@ const UrlSchema = new Schema({
   user:{type:String,ref:'User'},
   url: { type: String},
   maxResponseTime:String,
-  logs:Array,
+  name:String,
+  logs:[{timestamp:Date,responseDuration: String,successful: Boolean}],
   up:Boolean,
   created: { type: Date, default: Date.now }
 },{

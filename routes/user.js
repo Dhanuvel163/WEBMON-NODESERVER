@@ -10,7 +10,12 @@ function RemoveEmptyString(array){
   let reducedArray = array.filter((a)=>(a.trim() !== '' && a.trim() !== ' '))
   return reducedArray
 }
-
+const {Worker, isMainThread, parentPort, workerData}=require('worker_threads')
+if (isMainThread) {
+  const worker = new Worker('./Webworkers/ww.js');
+  // parentPort.postMessage('Hello world!');
+  worker.postMessage('Hello world!');
+}
 
 router.post('/signup', (req, res, next) => {
  let user = new User();
@@ -140,6 +145,7 @@ router.route('/url')
         let newurl = new Url();
         newurl.user=req.decoded.user._id;
         newurl.url = req.body.url;
+        newurl.name = req.body.name;
         newurl.maxResponseTime = req.body.maxResponseTime
         newurl.up = true;
         newurl.save()
@@ -150,7 +156,7 @@ router.route('/url')
                     message: 'Something went wrong !'
                 });  
             }else if(user){
-                user.urls = user.urls.push(newurl._id)
+                user.urls = user.urls.concat(newurl._id)
                 user.save()
                 res.json({
                     success: true,
@@ -166,6 +172,29 @@ router.route('/url')
         });        
       }
     });
-  });  
+  })
+  .delete(checkJWT,(req, res, next) => {
+    if(req.body.id){
+        Url.findOne({user:req.decoded.user._id,_id:req.body.id},(err,web)=>{
+            if(err){
+              res.json({
+                  success: false,
+                  message: 'Website doesnt exists !'
+              }); 
+            }else if(web){
+                Url.findByIdAndDelete(req.body.id)
+                res.json({
+                    success: true,
+                    message: 'Website removed successfully !'
+                }); 
+            }
+        })
+    }else{
+        res.json({
+            success: false,
+            message: 'Website doesnt exists !'
+        }); 
+    }
+  }) 
 
 module.exports = router;

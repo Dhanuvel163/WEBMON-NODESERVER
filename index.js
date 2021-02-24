@@ -5,8 +5,8 @@ const morgan = require("morgan");
 const axios = require("axios");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const config = require("./config");
+const cors = require("cors");
 const app = express();
 mongoose.connect(
   config.database,
@@ -62,22 +62,6 @@ app.listen(port, (err) => {
 
 
 
-
-// const URL_TO_CHECK = "http://yourwebsite.com/"
-
-// // const mailgun = require("mailgun-js");
-// // const DOMAIN = "sandboxXXX.mailgun.org";
-// // const mg = mailgun({ apiKey: "YOUR_API_KEY", domain: DOMAIN });
-
-
-// const insertVisit = (visit) => {
-
-// };
-
-// const getVisits = () => {
-
-// };
-
 // const reportError = (error) => {
 //   const data = {
 //     from: "Mailgun Sandbox <postmaster@sandboxXXX.mailgun.org>",
@@ -88,69 +72,4 @@ app.listen(port, (err) => {
 //   mg.messages().send(data, function (error, body) {
 //     console.log(body);
 //   });
-// }
-
-
-
-
-
-// app.get('/', async (req, res, next) => {
-//   try {
-//     const [entities] = await getVisits();
-//     const visits = entities.map(
-//       (entity) => `Time: ${entity.timestamp}, Response Time: ${entity.responseDuration}ms, Successful: ${entity.successful}`
-//     );
-//     res
-//       .status(200)
-//       .set('Content-Type', 'text/plain')
-//       .send(`Last 100 checks:\n${visits.join('\n')}`)
-//       .end();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// function test(){
-//   axios.interceptors.request.use(function (config) {
-//     config.metadata = { startTime: new Date() }
-//     return config;
-//   }, function (error) {
-//     return Promise.reject(error);
-//   });
-
-//   axios.interceptors.response.use(function (response) {
-//     response.config.metadata.endTime = new Date()
-//     response.duration = response.config.metadata.endTime - response.config.metadata.startTime
-//     return response;
-//   }, function (error) {
-//     return Promise.reject(error);
-//   });
-
-//   let visit = {}
-//   axios.get(URL_TO_CHECK)
-//     .then((response) => {
-//       visit = {
-//         timestamp: new Date(),
-//         responseDuration: response.duration,
-//         successful: true
-//       };
-//     })
-//     .catch((error) => {
-//       visit = {
-//         timestamp: new Date(),
-//         successful: false
-//       };
-//       console.log(error);
-//       reportError(error);
-//     })
-//     .then(async function () {
-//       // always executed
-//       try {
-//         await insertVisit(visit);
-//       } catch (error) {
-//         next(error);
-//       }
-
-//       response.status(200).send(visit).end();
-//     });
 // }
