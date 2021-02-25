@@ -32,7 +32,7 @@ parentPort.on('message',()=>{
     test()
     setInterval(() => {
         test()
-    }, 600000);
+    }, (300000));
 })
 
 async function test(){
