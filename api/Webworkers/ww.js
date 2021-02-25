@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const config = require("../config");
 const axios = require("axios");
 var nodemailer = require('nodemailer');
+var {htmlToPdfBuffer} = require('../../templates/helpers/htmlbuffer')
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -61,14 +62,22 @@ async function test(){
         let visit = {}
         axios.get(d.url)
             .then(async(response) => {
+                visit = {timestamp: new Date(),responseDuration: response.duration,successful: true};
                 if(d.up){
                     if(response.duration>d.maxResponseTime){
                         let data = await User.findById(d.user)
+                        const fileBuffer = await htmlToPdfBuffer('../../templates/logs.ejs', {
+                            logs: d.logs.concat(visit)
+                        });
                         await transporter.sendMail({
                             from: config.email,
                             to: data.email,
                             subject: `Your website ${d.name} (${d.url}) is slow!`,
-                            text: `Your website ${d.name} (${d.url}) response time (${response.duration} ms) is greater than provided maximum response time (${d.maxResponseTime} ms) !`
+                            text: `Your website ${d.name} (${d.url}) response time (${response.duration} ms) is greater than provided maximum response time (${d.maxResponseTime} ms) !`,
+                            attachments:[{
+                                filename:'logs.pdf',
+                                content:fileBuffer
+                            }]
                         }, 
                         function(error, info){
                             if (error) {console.log(error);} else {console.log('Email sent: ' + info.response)}
@@ -90,7 +99,6 @@ async function test(){
                         } 
                     }
                 }
-                visit = {timestamp: new Date(),responseDuration: response.duration,successful: true};
             })
             .catch(async(error) => {
                 visit = {timestamp: new Date(),successful: false};

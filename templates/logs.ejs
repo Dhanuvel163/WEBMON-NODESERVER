@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGS</title>
+    <style>
+        .box {
+            padding: 15px;
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 6%);
+            background: whitesmoke;
+            border-radius: 0.125rem;
+            border-color: #E2E8F0;
+            word-wrap: break-word;
+        }
+
+        .code {
+            display: block;
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.875rem;
+            padding-left: 0.2em;
+            padding-right: 0.2em;
+            border-radius: 0.125rem;
+            background: #C6F6D5;
+            color: #22543D;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        .text {
+            font-size: 1.875rem;
+            font-weight: 700;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        .divider {
+            opacity: 0.6;
+            border: 0;
+            border-color: inherit;
+            border-style: solid;
+            border-bottom-width: 1px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="text">LOGS</p>
+    <hr class="divider" />
+    <div class="box">
+        <% if (logs) { %>
+            <% logs.forEach((l)=>{%>
+                <code class="code">
+                    Time: 2021-02-25T08:05:44.268Z, Response Time: 140ms,Successful: true
+                </code>
+            <%}) %>
+        <% }) %>
+    </div>
+</body>
+
+</html>
