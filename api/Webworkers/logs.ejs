@@ -52,12 +52,12 @@
     <hr class="divider" />
     <div class="box">
         <% if (logs) { %>
-            <% logs.forEach((l)=>{%>
+            <% logs.forEach((l,i)=>{%>
                 <code class="code">
-                    Time: 2021-02-25T08:05:44.268Z, Response Time: 140ms,Successful: true
+                    Time: <%= l.timestamp %>, Response Time: <%= l.responseDuration %>ms,Successful: <%= l.successful %>
                 </code>
             <%}) %>
-        <% }) %>
+        <% }%>
     </div>
 </body>
 

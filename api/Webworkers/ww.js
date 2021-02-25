@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const config = require("../config");
 const axios = require("axios");
 var nodemailer = require('nodemailer');
-var {htmlToPdfBuffer} = require('../../templates/helpers/htmlbuffer')
+var path = require('path');
+var {htmlToPdfBuffer} = require('../../helpers/htmlbuffer')
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -66,8 +67,8 @@ async function test(){
                 if(d.up){
                     if(response.duration>d.maxResponseTime){
                         let data = await User.findById(d.user)
-                        const fileBuffer = await htmlToPdfBuffer('../../templates/logs.ejs', {
-                            logs: d.logs.concat(visit)
+                        const fileBuffer = await htmlToPdfBuffer(path.join(__dirname, 'logs.ejs'), {
+                            logs: d.logs.concat(visit),status:'slow'
                         });
                         await transporter.sendMail({
                             from: config.email,
@@ -104,8 +105,8 @@ async function test(){
                 visit = {timestamp: new Date(),successful: false};
                 if(d.up){
                     let data = await User.findById(d.user)
-                    const fileBuffer = await htmlToPdfBuffer('../../templates/logs.ejs', {
-                        logs: d.logs.concat(visit)
+                    const fileBuffer = await htmlToPdfBuffer(path.join(__dirname, 'logs.ejs'), {
+                        logs: d.logs.concat(visit),status:'down'
                     });
                     await transporter.sendMail({
                         from: 'dhanuram99com@gmail.com',

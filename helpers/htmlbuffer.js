@@ -1,5 +1,5 @@
-const {ejs} = require('ejs')
-const {htmlPdf} = require('html-pdf')
+const ejs = require('ejs')
+const htmlPdf = require('html-pdf')
 async function htmlToPdfBuffer(pathname, params) {
   const html = await ejs.renderFile(pathname, params);
   return new Promise((resolve, reject) => {
