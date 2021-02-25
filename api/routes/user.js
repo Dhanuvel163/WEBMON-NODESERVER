@@ -169,18 +169,34 @@ router.route('/url')
   })
   .delete(checkJWT,(req, res, next) => {
     if(req.body.id){
-        Url.findOne({user:req.decoded.user._id,_id:req.body.id},(err,web)=>{
+        Url.findOneAndDelete({user:req.decoded.user._id,_id:req.body.id},(err,web)=>{
             if(err){
               res.json({
                   success: false,
                   message: 'Website doesnt exists !'
               }); 
             }else if(web){
-                Url.findByIdAndDelete(req.body.id)
-                res.json({
-                    success: true,
-                    message: 'Website removed successfully !'
-                }); 
+                User.findOne({_id:req.decoded.user._id},(err,use)=>{
+                  if(err){
+                    res.json({
+                        success: false,
+                        message: 'User doesnt exists !'
+                    });
+                  }
+                  else if(use){
+                    use.urls = use.urls.filter((d)=>d!==req.body.id)
+                    use.save()
+                    res.json({
+                        success: true,
+                        message: 'Website removed successfully !'
+                    }); 
+                  }
+                })
+            }else{
+              res.json({
+                  success: false,
+                  message: 'Website doesnt exists !'
+              });          
             }
         })
     }else{
