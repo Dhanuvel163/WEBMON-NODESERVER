@@ -104,11 +104,18 @@ async function test(){
                 visit = {timestamp: new Date(),successful: false};
                 if(d.up){
                     let data = await User.findById(d.user)
+                    const fileBuffer = await htmlToPdfBuffer('../../templates/logs.ejs', {
+                        logs: d.logs.concat(visit)
+                    });
                     await transporter.sendMail({
                         from: 'dhanuram99com@gmail.com',
                         to: data.email,
                         subject: `Your website ${d.name} (${d.url}) is down!`,
-                        text: `Please check what's wrong with your server \n${error.message}`
+                        text: `Please check what's wrong with your server \n${error.message}`,
+                        attachments:[{
+                            filename:'logs.pdf',
+                            content:fileBuffer
+                        }]
                     }, 
                     function(error, info){
                         if (error) {console.log(error);} else {console.log('Email sent: ' + info.response)}
