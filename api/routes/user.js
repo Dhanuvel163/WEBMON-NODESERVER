@@ -10,12 +10,6 @@ function RemoveEmptyString(array){
   let reducedArray = array.filter((a)=>(a.trim() !== '' && a.trim() !== ' '))
   return reducedArray
 }
-const {Worker, isMainThread, parentPort, workerData}=require('worker_threads')
-if (isMainThread) {
-  const worker = new Worker('./Webworkers/ww.js');
-  // parentPort.postMessage('Hello world!');
-  worker.postMessage('Hello world!');
-}
 
 router.post('/signup', (req, res, next) => {
  let user = new User();

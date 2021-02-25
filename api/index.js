@@ -31,6 +31,12 @@ app.use(morgan("dev"));
 app.use(cors());
 const userRoutes = require("./routes/user");
 
+//WEBWORKERS
+const {Worker, isMainThread, parentPort, workerData}=require('worker_threads')
+if (isMainThread) {
+  const worker = new Worker('./api/Webworkers/ww.js');
+  worker.postMessage('Hello world!');
+}
 app.use("/api/useraccounts", userRoutes);
 const port = process.env.PORT || 3030;
 app.listen(port, (err) => {
