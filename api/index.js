@@ -10,18 +10,9 @@ const cors = require("cors");
 const app = express();
 mongoose.connect(
   config.database,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  },
+  {useNewUrlParser: true,useUnifiedTopology: true,useCreateIndex: true,useFindAndModify: false},
   (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Connected to the database");
-    }
+    if (err) {console.log(err);} else {console.log("Connected to the db");}
   }
 );
 
@@ -30,9 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(cors());
 const userRoutes = require("./routes/user");
-
 const chromeLauncher = require('chrome-launcher');
-
 const opts = {
   chromeFlags: ['--headless'],
   logLevel: 'info',
@@ -41,7 +30,6 @@ const opts = {
 (async() => {
 const chrome = await chromeLauncher.launch(opts);
 opts.port = chrome.port;
-
 //WEBWORKERS
 const {Worker, isMainThread, parentPort, workerData}=require('worker_threads')
 if (isMainThread) {
@@ -51,7 +39,6 @@ if (isMainThread) {
   workerLh.postMessage(opts);
 }
 })();
-
 
 app.use("/api/useraccounts", userRoutes);
 const port = process.env.PORT || 3030;

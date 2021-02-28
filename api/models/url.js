@@ -10,6 +10,9 @@ const UrlSchema = new Schema({
   score:{
     Performance:Number,Accessibility:Number,Best_Practices:Number,SEO:Number,Progressive_Web_App:Number
   },
+  meta:{
+    icon:String,description:String
+  },
   up:Boolean,
   created: { type: Date, default: Date.now }
 },{
