@@ -50,20 +50,4 @@ async function test(opts){
         }
         l=l+1
     }
-
-    // data.forEach(async(d)=>{
-    //     console.error(d.url)
-    //     const {lhr} = await lighthouse(d.url, opts, null);
-    //     await Object.values(lhr.categories).forEach(c =>{
-    //         if(c.title === 'Best Practices'){
-    //         d.score['Best_Practices'] = c.score
-    //         }else if(c.title === 'Progressive Web App'){
-    //         d.score['Progressive_Web_App'] = c.score
-    //         }else{
-    //         d.score[c.title] = c.score
-    //         }
-    //     })
-    //     await Url.findByIdAndUpdate(d._id,d)
-    //     console.log(`Lighthouse scores: ${Object.values(lhr.categories).map(c => `${c.title} ${c.score}`).join(', ')}`);
-    // })
 }
