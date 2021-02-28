@@ -7,26 +7,37 @@ const Url = require('../models/url');
 const config = require('../config');
 const checkJWT = require('../middlewares/check-jwtuser');
 const cheerio = require('cheerio');
+const fetch = require('node-fetch');
 function RemoveEmptyString(array){
   let reducedArray = array.filter((a)=>(a.trim() !== '' && a.trim() !== ' '))
   return reducedArray
 }
+
 const scrapeMetatags = async(url) => {
-        const res = await fetch(url);
-        const html = await res.text();
-        const $ = cheerio.load(html);
-        const getMetatag = (name) =>  
-            $(`meta[name=${name}]`).attr('content') ||  
-            $(`meta[property="og:${name}"]`).attr('content') ||  
-            $(`meta[property="twitter:${name}"]`).attr('content');
-        return { 
-            url,
-            title: $('title').first().text(),
-            favicon: $('link[rel="shortcut icon"]').attr('href'),
-            description: getMetatag('description'),
-            image: getMetatag('image'),
-            author: getMetatag('icon'),
-        }
+  const res = await fetch(url);
+  const html = await res.text();
+  const $ = await cheerio.load(html);
+  const getMetatag = (name) =>  
+      $(`meta[name=${name}]`).attr('content') ||  
+      $(`meta[property="og:${name}"]`).attr('content') ||  
+      $(`meta[property="twitter:${name}"]`).attr('content');
+
+  let icon = $(`link[rel=icon]`).attr('href')
+  if(icon && $(`link[rel=icon]`).attr('href').startsWith('/')){
+    var urlCpy = url
+    if(urlCpy.endsWith('/')){
+      urlCpy = urlCpy.slice(0, -1)
+    }
+    icon = `${urlCpy}${icon}`
+  }
+  return { 
+      title: $('title').first().text(),
+      favicon: $('link[rel="shortcut icon"]').attr('href'),
+      description: getMetatag('description'),
+      image: getMetatag('image'),
+      author: getMetatag('author'),
+      icon
+  }
 }
 
 router.post('/signup', (req, res, next) => {
@@ -161,26 +172,28 @@ router.route('/url')
         newurl.maxResponseTime = req.body.maxResponseTime
         newurl.up = true;
         try{
-
+          (async()=>{
+            newurl.meta =await scrapeMetatags(req.body.url)
+            await newurl.save()
+          })()
         }catch(e){
-
-        }
         newurl.save()
+        }
 
         User.findOne({_id:req.decoded.user._id},(err,user)=>{
             if(err){
-                res.json({
-                    success: false,
-                    message: 'Something went wrong !'
-                });  
+              res.json({
+                  success: false,
+                  message: 'Something went wrong !'
+              });  
             }else if(user){
-                user.urls = user.urls.concat(newurl._id)
-                user.save()
-                res.json({
-                    success: true,
-                    message: 'Successfully added your website !',
-                    url:newurl
-                });
+              user.urls = user.urls.concat(newurl._id)
+              user.save()
+              res.json({
+                  success: true,
+                  message: 'Successfully added your website !',
+                  url:newurl
+              });
             }
         })
       }else{

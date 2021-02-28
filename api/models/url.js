@@ -11,7 +11,7 @@ const UrlSchema = new Schema({
     Performance:Number,Accessibility:Number,Best_Practices:Number,SEO:Number,Progressive_Web_App:Number
   },
   meta:{
-    icon:String,description:String
+    icon:String,description:String,favicon:String,title:String,image:String,author:String
   },
   up:Boolean,
   created: { type: Date, default: Date.now }
