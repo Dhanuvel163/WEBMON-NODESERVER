@@ -32,7 +32,6 @@ async function test(opts){
     while (l<data.length){
         try{
             let d = data[l]
-            console.error(d.url)
             const {lhr} = await lighthouse(d.url, opts, null);
             await Object.values(lhr.categories).forEach(c =>{
                 if(c.title === 'Best Practices'){

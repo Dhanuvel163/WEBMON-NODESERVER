@@ -6,9 +6,27 @@ const Url = require('../models/url');
 
 const config = require('../config');
 const checkJWT = require('../middlewares/check-jwtuser');
+const cheerio = require('cheerio');
 function RemoveEmptyString(array){
   let reducedArray = array.filter((a)=>(a.trim() !== '' && a.trim() !== ' '))
   return reducedArray
+}
+const scrapeMetatags = async(url) => {
+        const res = await fetch(url);
+        const html = await res.text();
+        const $ = cheerio.load(html);
+        const getMetatag = (name) =>  
+            $(`meta[name=${name}]`).attr('content') ||  
+            $(`meta[property="og:${name}"]`).attr('content') ||  
+            $(`meta[property="twitter:${name}"]`).attr('content');
+        return { 
+            url,
+            title: $('title').first().text(),
+            favicon: $('link[rel="shortcut icon"]').attr('href'),
+            description: getMetatag('description'),
+            image: getMetatag('image'),
+            author: getMetatag('icon'),
+        }
 }
 
 router.post('/signup', (req, res, next) => {
@@ -142,7 +160,13 @@ router.route('/url')
         newurl.name = req.body.name;
         newurl.maxResponseTime = req.body.maxResponseTime
         newurl.up = true;
+        try{
+
+        }catch(e){
+
+        }
         newurl.save()
+
         User.findOne({_id:req.decoded.user._id},(err,user)=>{
             if(err){
                 res.json({
