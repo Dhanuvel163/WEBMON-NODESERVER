@@ -7,6 +7,9 @@ const UrlSchema = new Schema({
   maxResponseTime:String,
   name:String,
   logs:[{timestamp:Date,responseDuration: String,successful: Boolean}],
+  score:{
+    Performance:Number,Accessibility:Number,Best_Practices:Number,SEO:Number,Progressive_Web_App:Number
+  },
   up:Boolean,
   created: { type: Date, default: Date.now }
 },{
