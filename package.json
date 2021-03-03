@@ -29,6 +29,7 @@
     "nodemailer": "^6.4.18",
     "path": "^0.12.7",
     "puppeteer": "^8.0.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "voice-recognition": "^1.0.6"
   }
 }
