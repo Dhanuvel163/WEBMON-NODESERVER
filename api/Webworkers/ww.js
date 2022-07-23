@@ -66,23 +66,25 @@ async function test(){
                 visit = {timestamp: new Date(),responseDuration: response.duration,successful: true};
                 if(d.up){
                     if(response.duration>d.maxResponseTime){
-                        let data = await User.findById(d.user)
-                        const fileBuffer = await htmlToPdfBuffer(path.join(__dirname, 'logs.ejs'), {
-                            logs: d.logs.concat(visit),status:'slow'
-                        });
-                        await transporter.sendMail({
-                            from: config.email,
-                            to: data.email,
-                            subject: `Your website ${d.name} (${d.url}) is slow!`,
-                            text: `Your website ${d.name} (${d.url}) response time (${response.duration} ms) is greater than provided maximum response time (${d.maxResponseTime} ms) !`,
-                            attachments:[{
-                                filename:'logs.pdf',
-                                content:fileBuffer
-                            }]
-                        }, 
-                        function(error, info){
-                            if (error) {console.log(error);} else {console.log('Email sent: ' + info.response)}
-                        });
+                        try {
+                            let data = await User.findById(d.user)
+                            const fileBuffer = await htmlToPdfBuffer(path.join(__dirname, 'logs.ejs'), {
+                                logs: d.logs.concat(visit),status:'slow'
+                            });
+                            await transporter.sendMail({
+                                from: config.email,
+                                to: data.email,
+                                subject: `Your website ${d.name} (${d.url}) is slow!`,
+                                text: `Your website ${d.name} (${d.url}) response time (${response.duration} ms) is greater than provided maximum response time (${d.maxResponseTime} ms) !`,
+                                attachments:[{
+                                    filename:'logs.pdf',
+                                    content:fileBuffer
+                                }]
+                            },
+                            function(error, info){
+                                if (error) {console.log(error);} else {console.log('Email sent: ' + info.response)}
+                            });
+                        } catch (error) {}
                         try {
                             d.up=false
                             await Url.findByIdAndUpdate(d._id,d)
@@ -104,23 +106,25 @@ async function test(){
             .catch(async(error) => {
                 visit = {timestamp: new Date(),successful: false};
                 if(d.up){
-                    let data = await User.findById(d.user)
-                    const fileBuffer = await htmlToPdfBuffer(path.join(__dirname, 'logs.ejs'), {
-                        logs: d.logs.concat(visit),status:'down'
-                    });
-                    await transporter.sendMail({
-                        from: 'dhanuram99com@gmail.com',
-                        to: data.email,
-                        subject: `Your website ${d.name} (${d.url}) is down!`,
-                        text: `Please check what's wrong with your server \n${error.message}`,
-                        attachments:[{
-                            filename:'logs.pdf',
-                            content:fileBuffer
-                        }]
-                    }, 
-                    function(error, info){
-                        if (error) {console.log(error);} else {console.log('Email sent: ' + info.response)}
-                    });
+                    try {
+                        let data = await User.findById(d.user)
+                        const fileBuffer = await htmlToPdfBuffer(path.join(__dirname, 'logs.ejs'), {
+                            logs: d.logs.concat(visit),status:'down'
+                        });
+                        await transporter.sendMail({
+                            from: 'dhanuram99com@gmail.com',
+                            to: data.email,
+                            subject: `Your website ${d.name} (${d.url}) is down!`,
+                            text: `Please check what's wrong with your server \n${error.message}`,
+                            attachments:[{
+                                filename:'logs.pdf',
+                                content:fileBuffer
+                            }]
+                        },
+                        function(error, info){
+                            if (error) {console.log(error);} else {console.log('Email sent: ' + info.response)}
+                        });
+                    } catch (error) {}
                     try {
                         d.up=false
                         await Url.findByIdAndUpdate(d._id,d)
